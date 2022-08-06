@@ -2,7 +2,7 @@
 const inquirer = require('inquirer');
 const sqlconnection = require('./db/sqlconnection');
 const cTable = require('console.table');
-const db = require('./db/sqlconnection');
+
 
 // const employee = require("./lib/employee");
 
