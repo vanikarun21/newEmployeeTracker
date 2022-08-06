@@ -5,6 +5,7 @@ const db = mysql.createConnection(
       host: 'localhost',
       // Your MySQL username,
       user: 'root',
+      port:'3306',
       // Your MySQL password
       password: '3115_mysql',
       database: 'empTracker'
