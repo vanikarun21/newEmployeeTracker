@@ -2,6 +2,7 @@
 const inquirer = require('inquirer');
 const sqlconnection = require('./db/sqlconnection');
 const cTable = require('console.table');
+const db = require('./db/sqlconnection');
 
 // const employee = require("./lib/employee");
 
@@ -49,7 +50,7 @@ function viewDepartments() {db.query(`SELECT * FROM department`, (err, rows) => 
     if (err) {
         console.log(err);
       }
-      console.log(rows);
+      console.table(rows);
       pickAchoice();
   });
 };
@@ -58,7 +59,7 @@ function viewRoles() {db.query(`SELECT * FROM role`, (err, rows) => {
     if (err) {
         console.log(err);
       }
-      console.log(rows);
+      console.table(rows);
       pickAchoice();
   });
 };
@@ -67,12 +68,32 @@ function viewEmployees() {db.query(`SELECT * FROM employee`, (err, rows) => {
     if (err) {
         console.log(err);
       }
-      console.log(rows);
+      console.table(rows);
       pickAchoice();
   });
 };
 
+function addDepartment() {
+    return inquirer.prompt(
+        {
+            type: 'input',
+            name: 'deptName',
+            message: 'add department name'
+        }
+    ).then(data => {
+        const departmentName =data.deptName;
+        const sql = `INSERT INTO department (department_name) 
+        VALUES (?)`;
+        db.query(sql, departmentName, (err, result) => {
+            if (err) {
+              console.log(err);
+            }
+            console.table(result);
 
+        });
+        pickAchoice();
+    });
+};
 
 
 
