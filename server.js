@@ -21,7 +21,7 @@ const pickAchoice = () => {
             choices:['view all departments', 'view all roles', 'view all employees','add a department','add a role','add an employee'],
         }
     ]). then (data => {
-        switch(data.pickAchoice) {
+        switch(data.choose) {
             case 'view all departments':
                 viewDepartments();
                 break;
@@ -46,7 +46,7 @@ const pickAchoice = () => {
 
 pickAchoice();
 
-function viewDepartments() {db.query(`SELECT * FROM department`, (err, rows) => {
+function viewDepartments() {sqlconnection.query(`SELECT * FROM department`, (err, rows) => {
     if (err) {
         console.log(err);
       }
@@ -55,7 +55,7 @@ function viewDepartments() {db.query(`SELECT * FROM department`, (err, rows) => 
   });
 };
 
-function viewRoles() {db.query(`SELECT * FROM role`, (err, rows) => {
+function viewRoles() {sqlconnection.query(`SELECT * FROM role`, (err, rows) => {
     if (err) {
         console.log(err);
       }
@@ -64,7 +64,7 @@ function viewRoles() {db.query(`SELECT * FROM role`, (err, rows) => {
   });
 };
 
-function viewEmployees() {db.query(`SELECT * FROM employee`, (err, rows) => {
+function viewEmployees() {sqlconnection.query(`SELECT * FROM employee`, (err, rows) => {
     if (err) {
         console.log(err);
       }
@@ -84,20 +84,102 @@ function addDepartment() {
         const departmentName =data.deptName;
         const sql = `INSERT INTO department (department_name) 
         VALUES (?)`;
-        db.query(sql, departmentName, (err, result) => {
-            if (err) {
-              console.log(err);
-            }
-            console.table(result);
+        // sqlconnection.promise().query(sql, departmentName, (err, result) => {
+        //     if (err) {
+        //       console.log(err);
+        //     }
+        //     console.log("GREEN LIGHT");
+        //     console.table(result);
 
-        });
-        pickAchoice();
-    });
+        // })
+        sqlconnection.promise().query(sql, departmentName).then (data => {
+            console.log('successful creation');
+        })
+        .then(data => {
+            pickAchoice()
+        
+            }); 
+    })
 };
+//  add a role
+function addRole() {
+    return inquirer.prompt([
+        {
+            type: 'input',
+            name: 'roleName',
+            message: 'add role name'
+        },
+        {
+            type: 'input',
+            name: 'salary',
+            message: 'add salary'
+        },
+        {
+            type: 'input',
+            name: 'department_id',
+            message: 'input a number'
+        }
+    ]).then(data => {
+        const addRole = [data.roleName,parseInt(data.salary),parseInt(data.department_id)]
+        const sql = `INSERT INTO role (title, salary, department_id) 
+        VALUES (?,?,?)`;
+        // sqlconnection.promise().query(sql, departmentName, (err, result) => {
+        //     if (err) {
+        //       console.log(err);
+        //     }
+        //     console.log("GREEN LIGHT");
+        //     console.table(result);
 
+        // })
+        sqlconnection.promise().query(sql,addRole).then (data => {
+            console.log(data);
+            console.log('successful creation');
+        })
+        .then(data => {
+            pickAchoice()
+        
+            }); 
+    })
+};
+// add an employee
 
-
- 
+function addEmployee() {
+    return inquirer.prompt([
+        {
+            type: 'input',
+            name: 'first',
+            message: 'add first name'
+        },
+        {
+            type: 'input',
+            name: 'last',
+            message: 'add last name'
+        },
+        {
+            type: 'input',
+            name: 'roleId',
+            message: 'input a number'
+        },
+        {
+            type: 'input',
+            name: 'managerId',
+            message: 'input a number'
+        }
+    ]).then(data => {
+        const addEmployee = [data.first,data.last,parseInt(data.roleId),parseInt(data.managerId)]
+        const sql = `INSERT INTO employee (first_name,last_name,role_id,manager_id) 
+        VALUES (?,?,?,?)`;
+      
+        sqlconnection.promise().query(sql,addEmployee).then (data => {
+            console.log(data);
+            console.log('successful creation');
+        })
+        .then(data => {
+            pickAchoice()
+        
+            }); 
+    })
+};
 
 //  if (pickAchoice.choose === 'view all department') {
 //     return 
